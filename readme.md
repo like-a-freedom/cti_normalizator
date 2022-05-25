@@ -1,6 +1,8 @@
 # What's that?
 
-The idea is to create a simple package that is inteded for threat intelligence threat actors and malwares normalization: there are a lot of threat actors and malwares that has more than one name and sometimes you need to quickly answer the question "Does the malware/threat actor have a main (canonical)" name? The package provide realy simple algorithm that is based on the couple of steps — strict matching and fuzzy matching.
+The idea is to create a simple package that is inteded for threat intelligence threat actors and malwares normalization: there are a lot of threat actors and malwares that has more than one name and sometimes you need to quickly answer the question "Does the malware/threat actor have a main (canonical) name"?
+
+The package provide realy simple algorithm that is based on the couple of steps — strict matching and fuzzy matching.
 
 ## Idea
 
