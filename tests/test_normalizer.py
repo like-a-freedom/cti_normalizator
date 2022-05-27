@@ -1,8 +1,6 @@
 import json
 import pathlib
-from unittest import result
 
-from sklearn.utils import resample
 import normalizer as norm
 from os.path import join
 
@@ -46,14 +44,30 @@ class TestExtractor:
         result = norm._get_threat_actor_synonyms(" ")
         assert result == []
 
-    def test_normalize_threat_actor_name(self):
+    def test_normalize_threat_actor_name_synonyms_return_synonyms(self):
         result = norm.normalize_threat_actor_name("NOBELIUM", return_synonyms=True)
         assert result == {
             "canonical_name": "UNC2452",
             "synonyms": ["Dark Halo", "DarkHalo", "NOBELIUM", "StellarParticle"],
         }
 
-    def test_normalize_malware_name(self):
+    def test_normalize_threat_actor_name_synonym_return_no_synonyms(self):
+        result = norm.normalize_threat_actor_name("NOBELIUM", return_synonyms=False)
+        assert result == "UNC2452"
+
+    def test_normalize_threat_actor_name_no_match(self):
+        result = norm.normalize_threat_actor_name(
+            "23rjnewrjgbliwbv2", return_synonyms=False
+        )
+        assert result == "23rjnewrjgbliwbv2"
+
+    def test_normalize_threat_actor_name_strict_cname_no_synonyms(self):
+        result = norm.normalize_threat_actor_name(
+            "Transparent Tribe", return_synonyms=False
+        )
+        assert result == "Transparent Tribe"
+
+    def test_normalize_malware_name_synonyms_return_synonyms(self):
         result = norm.normalize_malware_name("Totbrick", return_synonyms=True)
         assert result == {
             "canonical_name": "TrickBot",
@@ -65,3 +79,15 @@ class TestExtractor:
                 "Trickster",
             ],
         }
+
+    def test_normalize_malware_name_synonyms_return_no_synonyms(self):
+        result = norm.normalize_malware_name("Totbrick", return_synonyms=False)
+        assert result == "TrickBot"
+
+    def test_normalize_malware_name_strict_cname_no_synonyms(self):
+        result = norm.normalize_malware_name("TRITON", return_synonyms=False)
+        assert result == "TRITON"
+
+    def test_normalize_malware_name_no_match(self):
+        result = norm.normalize_malware_name("23rjnewrjgbliwbv2", return_synonyms=False)
+        assert result == "23rjnewrjgbliwbv2"
