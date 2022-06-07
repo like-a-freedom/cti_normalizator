@@ -4,6 +4,8 @@ The idea is to create a simple package that is inteded for threat intelligence t
 
 The package provide realy simple algorithm that is based on the couple of steps — strict matching and fuzzy matching.
 
+Origin data about threat actors and malwares grabbed from MISP, MITRE, MALPEDIA and other sources.
+
 ## Idea
 
 Main idea is so simple:
@@ -23,23 +25,27 @@ As a package:
 import normalizer as norm
 
 result = norm.normalize_threat_actor_name("NOBELIUM")
+print(result.json())
 ...
 {
-    "canonical_name": "UNC2452",
-    "synonyms": ["Dark Halo", "DarkHalo", "NOBELIUM", "StellarParticle"],
+    "canonical_name": "UNC2452", 
+    "synonyms": null, 
+    "info": "Fuzzy match by synonym"
 }
 
-result = norm.normalize_malware_name("Totbrick")
+result = norm.normalize_malware_name("Totbrick", return_synonyms=True)
+print(result.json())
 ...
 {
-    "canonical_name": "TrickBot",
-    "synonyms": [
-        "TSPY_TRICKLOAD",
-        "TheTrick",
-        "Totbrick",
-        "TrickLoader",
-        "Trickster",
-    ],
+    "canonical_name": "TrickBot", 
+    "synonyms": 
+        [
+            "TSPY_TRICKLOAD",
+            "TheTrick",
+            "Totbrick",
+            "TrickLoader",
+            "Trickster"],
+    "info": "Fuzzy match by synonym"
 }
 ```
 

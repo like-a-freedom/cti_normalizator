@@ -42,6 +42,25 @@ class TestExtractor:
         assert result["Pkybot"] == ["Bublik", "Pykbot", "TBag"]
         assert result["PLEAD (Windows)"] == ["DRAWDOWN", "GOODTIMES", "Linopid"]
 
+    def test_extract_thales_data(self):
+        data = load_json(join(MOCKS_DIR, "raw/thales/thales_cti.json"))
+        result = extractor.extract_thales_data(data)
+        assert isinstance(result, list)
+        assert result[0] == ["Cobalt Lyceum", "HEXANE"]
+        assert result[1] == [
+            "APT 34",
+            "APT34",
+            "CHRYSENE",
+            "Clayslide",
+            "Crambus",
+            "Greenbug",
+            "Helix Kitten",
+            "Helminth",
+            "IRN2",
+            "OilRig",
+            "Twisted Kitten",
+        ]
+
     def test_merge_sources(self):
         dict1 = {
             "key_01": ["value_01", "value_02", "value_03"],
@@ -63,7 +82,7 @@ class TestExtractor:
 
     def test_deduplicate_key_values(self):
         duplicated = {
-            "key_01": ["key_01", "value_02", "value_03"],
+            "key_01": ["key_01", "value_02", "value_03", "key_01"],
             "key_02": ["value_10", "value_11"],
             "key_03": ["key_03"],
         }

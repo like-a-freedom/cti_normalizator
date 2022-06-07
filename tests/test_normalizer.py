@@ -1,9 +1,8 @@
 import json
 import pathlib
-
-import normalizer as norm
 from os.path import join
 
+import normalizer as norm
 
 MOCKS_DIR = join(pathlib.Path(__file__).parent.absolute(), "fixtures")
 
@@ -49,23 +48,24 @@ class TestExtractor:
         assert result == {
             "canonical_name": "UNC2452",
             "synonyms": ["Dark Halo", "DarkHalo", "NOBELIUM", "StellarParticle"],
+            "info": "Fuzzy match by synonym",
         }
 
     def test_normalize_threat_actor_name_synonym_return_no_synonyms(self):
         result = norm.normalize_threat_actor_name("NOBELIUM", return_synonyms=False)
-        assert result == "UNC2452"
+        assert result.canonical_name == "UNC2452"
 
     def test_normalize_threat_actor_name_no_match(self):
         result = norm.normalize_threat_actor_name(
             "23rjnewrjgbliwbv2", return_synonyms=False
         )
-        assert result == "23rjnewrjgbliwbv2"
+        assert result.canonical_name == "23rjnewrjgbliwbv2"
 
     def test_normalize_threat_actor_name_strict_cname_no_synonyms(self):
         result = norm.normalize_threat_actor_name(
             "Transparent Tribe", return_synonyms=False
         )
-        assert result == "Transparent Tribe"
+        assert result.canonical_name == "Transparent Tribe"
 
     def test_normalize_malware_name_synonyms_return_synonyms(self):
         result = norm.normalize_malware_name("Totbrick", return_synonyms=True)
@@ -78,16 +78,18 @@ class TestExtractor:
                 "TrickLoader",
                 "Trickster",
             ],
+            "info": "Fuzzy match by synonym",
         }
 
     def test_normalize_malware_name_synonyms_return_no_synonyms(self):
         result = norm.normalize_malware_name("Totbrick", return_synonyms=False)
-        assert result == "TrickBot"
+        assert result.canonical_name == "TrickBot"
 
     def test_normalize_malware_name_strict_cname_no_synonyms(self):
         result = norm.normalize_malware_name("TRITON", return_synonyms=False)
-        assert result == "TRITON"
+        assert result.canonical_name == "TRITON"
 
     def test_normalize_malware_name_no_match(self):
         result = norm.normalize_malware_name("23rjnewrjgbliwbv2", return_synonyms=False)
-        assert result == "23rjnewrjgbliwbv2"
+        assert result.canonical_name == "23rjnewrjgbliwbv2"
+        assert result.info == "No match found"

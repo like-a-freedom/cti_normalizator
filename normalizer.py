@@ -1,7 +1,9 @@
 import json
-from typing import Dict, List, Optional, Union
-import jellyfish as jf
 import os
+from typing import Dict, List, Optional
+from models import ThreatActorNormalizedModel, MalwareNormalizedModel
+
+import jellyfish as jf
 
 from downloader import DATA_PATH
 
@@ -98,69 +100,93 @@ def _get_most_similar_malware_synonym(malware_name: str) -> Optional[str]:
 
 def normalize_threat_actor_name(
     threat_actor_name: str, return_synonyms: bool = False
-) -> Optional[Union[str, Dict]]:
+) -> ThreatActorNormalizedModel:
     if _is_canonical_threat_actor_name(threat_actor_name):
         if return_synonyms:
-            return {
-                "canonical_name": threat_actor_name,
-                "synonyms": _get_threat_actor_synonyms(threat_actor_name),
-            }
+            return ThreatActorNormalizedModel(
+                canonical_name=threat_actor_name,
+                synonyms=_get_threat_actor_synonyms(threat_actor_name),
+                info="Strict match by canonical name",
+            )
         else:
-            return threat_actor_name
+            return ThreatActorNormalizedModel(
+                canonical_name=threat_actor_name, info="Strict match by canonical name"
+            )
     else:
         cname_match = _get_most_similar_threat_actor_cname(threat_actor_name)
         if cname_match:
             if return_synonyms:
-                return {
-                    "canonical_name": cname_match,
-                    "synonyms": _get_threat_actor_synonyms(cname_match),
-                }
+                return ThreatActorNormalizedModel(
+                    canonical_name=cname_match,
+                    synonyms=_get_threat_actor_synonyms(cname_match),
+                    info="Fuzzy match by canonical name",
+                )
             else:
-                return cname_match
+                return ThreatActorNormalizedModel(
+                    canonical_name=cname_match, info="Fuzzy match by canonical name"
+                )
         else:
             synonym_match = _get_most_similar_threat_actor_synonym(threat_actor_name)
             if synonym_match:
                 if return_synonyms:
-                    return {
-                        "canonical_name": synonym_match,
-                        "synonyms": _get_threat_actor_synonyms(synonym_match),
-                    }
+
+                    return ThreatActorNormalizedModel(
+                        canonical_name=synonym_match,
+                        synonyms=_get_threat_actor_synonyms(synonym_match),
+                        info="Fuzzy match by synonym",
+                    )
                 else:
-                    return synonym_match
+                    return ThreatActorNormalizedModel(
+                        canonical_name=synonym_match, info="Fuzzy match by synonym"
+                    )
             else:
-                return threat_actor_name
+                return ThreatActorNormalizedModel(
+                    canonical_name=threat_actor_name, info="No match found"
+                )
 
 
 def normalize_malware_name(
     malware_name: str, return_synonyms=False
-) -> Optional[Union[str, Dict]]:
+) -> MalwareNormalizedModel:
     if _is_canonical_malware_name(malware_name):
         if return_synonyms:
-            return {
-                "canonical_name": malware_name,
-                "synonyms": _get_malware_synonyms(malware_name),
-            }
+            return MalwareNormalizedModel(
+                canonical_name=malware_name,
+                synonyms=_get_malware_synonyms(malware_name),
+                info="Strict match by canonical name",
+            )
         else:
-            return malware_name
+            return MalwareNormalizedModel(
+                canonical_name=malware_name,
+                info="Strict match by canonical name",
+            )
     else:
         cname_match = _get_most_similar_malware_cname(malware_name)
         if cname_match:
             if return_synonyms:
-                return {
-                    "canonical_name": cname_match,
-                    "synonyms": _get_malware_synonyms(cname_match),
-                }
+                return MalwareNormalizedModel(
+                    canonical_name=cname_match,
+                    synonyms=_get_malware_synonyms(cname_match),
+                    info="Fuzzy match by canonical name",
+                )
             else:
-                return cname_match
+                return MalwareNormalizedModel(
+                    canonical_name=cname_match, info="Fuzzy match by canonical name"
+                )
         else:
             synonym_match = _get_most_similar_malware_synonym(malware_name)
             if synonym_match:
                 if return_synonyms:
-                    return {
-                        "canonical_name": synonym_match,
-                        "synonyms": _get_malware_synonyms(synonym_match),
-                    }
+                    return MalwareNormalizedModel(
+                        canonical_name=synonym_match,
+                        synonyms=_get_malware_synonyms(synonym_match),
+                        info="Fuzzy match by synonym",
+                    )
                 else:
-                    return synonym_match
+                    return MalwareNormalizedModel(
+                        canonical_name=synonym_match, info="Fuzzy match by synonym"
+                    )
             else:
-                return malware_name
+                return MalwareNormalizedModel(
+                    canonical_name=malware_name, info="No match found"
+                )

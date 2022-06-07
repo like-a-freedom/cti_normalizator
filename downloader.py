@@ -2,7 +2,7 @@ import os
 import ujson as json
 import httpx
 import extractor
-from typing import Dict
+from typing import Any
 
 
 client = httpx.Client(timeout=60)
@@ -21,9 +21,10 @@ MISP_MALPEDIA_URL: str = (
 MISP_BANKERS_URL: str = (
     "https://raw.githubusercontent.com/MISP/misp-galaxy/main/clusters/banker.json"
 )
+THALES_CTI_URL: str = "https://cyberthreat.thalesgroup.com/api/adversaries"
 
 
-def __get_data(url: str) -> Dict:
+def __get_data(url: str) -> Any:
     try:
         with httpx.Client() as client:
             response = client.get(url)
@@ -45,10 +46,12 @@ def update_sources() -> None:
             __get_data(MISP_MALPEDIA_URL)
         )
 
-        # TODO: Add this source ?
+        # TODO: Add this sources ?
         # misp_bankers_malware = extractor.extract_misp_cluster(
         #     __get_data(MISP_BANKERS_URL)
         # )
+        #
+        # thales_threat_actors = extractor.extract_thales_data(__get_data(THALES_CTI_URL))
 
         malwares = extractor.deduplicate_key_values(
             extractor.merge_sources(mitre_malware_names, malpedia_malwares)

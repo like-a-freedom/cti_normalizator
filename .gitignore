@@ -1,4 +1,6 @@
 settings.json
+.vscode
+cov.xml
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
