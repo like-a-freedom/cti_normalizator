@@ -44,7 +44,8 @@ print(result.json())
             "TheTrick",
             "Totbrick",
             "TrickLoader",
-            "Trickster"],
+            "Trickster"
+        ],
     "info": "Fuzzy match by synonym"
 }
 ```
